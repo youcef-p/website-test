@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>أخبار العالم</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f0f0;
+      direction: rtl;
+      padding: 20px;
+    }
+    h1 { text-align: center; }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .card a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .card p {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>📰 موجز الأخبار العربية</h1>
+  <div class="news-grid" id="news-container"></div>
+
+  <script>
+    const rssFeeds = [
+      "https://rss2json.com/api.json?rss_url=https://www.aljazeera.net/aljazeera/rss",
+      "https://rss2json.com/api.json?rss_url=http://www.bbc.com/arabic/index.xml",
+      "https://rss2json.com/api.json?rss_url=https://www.skynewsarabia.com/web/rss"
+    ];
+
+    const container = document.getElementById('news-container');
+
+    rssFeeds.forEach(url => {
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          data.items.slice(0, 5).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+              <a href="${item.link}" target="_blank">${item.title}</a>
+              <p>${item.pubDate.split(" ")[0]}</p>
+              <p>${item.description.substring(0, 100)}...</p>
+            `;
+            container.appendChild(card);
+          });
+        });
+    });
+  </script>
+</body>
+</html>
